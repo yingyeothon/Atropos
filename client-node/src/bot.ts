@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import shortid from 'shortid';
 import { serializeMoveMessage } from '../../protocol-node';
-import { getRandomInt } from './util';
+import { getRandomInt, getRandomIntRange } from './util';
 import delay from 'delay';
 import { MAP_HEIGHT, MAP_WIDTH } from './map';
 import { connect } from './connection';
@@ -26,8 +26,8 @@ const idle = async (ws: WebSocket) => {
   let x = getRandomInt(MAP_WIDTH)
   let y = getRandomInt(MAP_HEIGHT)
 
-  let vx = getRandomInt(2)
-  let vy = getRandomInt(2)
+  let vx = getRandomIntRange(1, 3)
+  let vy = getRandomIntRange(1, 3)
 
   while (true) {
     if (x <= 0 || x >= MAP_WIDTH) {

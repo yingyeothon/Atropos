@@ -1,6 +1,6 @@
 import { createBot } from "./bot";
 import { range } from './util';
 
-range(3).forEach(_ => {
+range(50).forEach(_ => {
   createBot()
 })
