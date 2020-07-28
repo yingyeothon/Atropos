@@ -1,11 +1,28 @@
 import { MAP_HEIGHT, MAP_WIDTH } from './map';
-import shortid from 'shortid';
-import { parseIdMoveMessages } from '../../protocol-node';
+import { IdPos, parseIdMoveMessages } from '../../protocol-node';
 import { connect } from './connection';
+import delay from 'delay'
 
-(() => {
+const world: { [key: string]: IdPos } = {}
 
-  const id = shortid()
+const render = async (canvas: HTMLCanvasElement) => {
+    const ctx = canvas.getContext('2d')!
+
+    while (true) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      Object.values(world).forEach(([id, x, y]) => {
+        ctx.font = "3px";
+        ctx.fillText(id, x, y);
+      })
+
+      await delay(1 / 60)
+    }
+  }
+
+;(() => {
+
+  console.log("hi")
 
   const canvas = document.createElement('canvas')
   canvas.style.width = '100%'
@@ -16,21 +33,14 @@ import { connect } from './connection';
 
   document.querySelector('body')?.appendChild(canvas)
 
-  const ctx = canvas.getContext('2d', {})
-  if (!ctx) {
-    return
-  }
+  render(canvas)
 
   const ws = connect() as globalThis.WebSocket
 
   ws.onmessage = function (ev) {
     const idPoses = parseIdMoveMessages(ev.data)
-
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    idPoses.forEach(([id, x, y]) => {
-      ctx.font = "3px";
-      ctx.fillText(id, x, y);
+    idPoses.forEach(idPos => {
+      world[idPos[0]] = idPos
     })
   }
 })()
