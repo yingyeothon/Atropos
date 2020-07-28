@@ -1,6 +1,7 @@
-import { MAP_HEIGHT, MAP_WIDTH, SERVER_URL } from './constant';
+import { MAP_HEIGHT, MAP_WIDTH } from './map';
 import shortid from 'shortid';
 import { parseIdMoveMessages } from '../../protocol-node';
+import { connect } from './connection';
 
 (() => {
 
@@ -15,20 +16,21 @@ import { parseIdMoveMessages } from '../../protocol-node';
 
   document.querySelector('body')?.appendChild(canvas)
 
-  const context = canvas.getContext('2d', {})
-  if (!context) {
+  const ctx = canvas.getContext('2d', {})
+  if (!ctx) {
     return
   }
 
-  context.beginPath();
-  context.rect(20, 20, 150, 100);
-  context.fillStyle = "red";
-  context.fill();
-
-  const ws = new WebSocket(SERVER_URL)
+  const ws = connect() as globalThis.WebSocket
 
   ws.onmessage = function (ev) {
     const idPoses = parseIdMoveMessages(ev.data)
-    console.log(idPoses)
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    idPoses.forEach(([id, x, y]) => {
+      ctx.font = "3px";
+      ctx.fillText(id, x, y);
+    })
   }
 })()

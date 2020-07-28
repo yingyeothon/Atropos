@@ -20,8 +20,9 @@ export default function upgradeConnectionWith({
     const stat = useStat();
 
     ++stat.upgraded;
-    const pathname = url.parse(request.url ?? "").pathname;
-    const id = request.headers["x-id"] as string;
+    const parsedUrl = url.parse(request.url ?? "", true);
+    const pathname = parsedUrl.pathname;
+    const id = parsedUrl.query["x-id"] as string;
     if (id && !(id in context.connections) && pathname === "/xy") {
       wss.handleUpgrade(request, socket, head, function done(ws) {
         // Double check

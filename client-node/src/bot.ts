@@ -1,32 +1,46 @@
 import WebSocket from 'ws';
 import shortid from 'shortid';
-import { parseIdMoveMessages, serializeMoveMessage } from '../../protocol-node';
+import { serializeMoveMessage } from '../../protocol-node';
 import { getRandomInt } from './util';
 import delay from 'delay';
-import { MAP_HEIGHT, MAP_WIDTH, SERVER_URL } from './constant';
+import { MAP_HEIGHT, MAP_WIDTH } from './map';
+import { connect } from './connection';
 
 export const createBot = () => {
   const id = shortid()
 
   console.log(`createBot: ${id}`)
 
-  const ws = new WebSocket(SERVER_URL, {
-    headers: {
-      'x-id': id,
-    }
+  const ws = connect() as WebSocket
+
+  ws.on('open', () => {
+    idle(ws)
   })
 
   ws.on('message', (data: string) => {
-    const idPoses = parseIdMoveMessages(data)
-    // console.log(idPoses)
+    // Do nothing
   })
+}
 
-  ;(async () => {
-    while (true) {
-      const x = getRandomInt(MAP_WIDTH)
-      const y = getRandomInt(MAP_HEIGHT)
-      ws.send(serializeMoveMessage(x, y))
-      await delay(1 / 60)
+const idle = async (ws: WebSocket) => {
+  let x = getRandomInt(MAP_WIDTH)
+  let y = getRandomInt(MAP_HEIGHT)
+
+  let vx = getRandomInt(5)
+  let vy = getRandomInt(5)
+
+  while (true) {
+    if (x <= 0 || x >= MAP_WIDTH) {
+      vx *= -1
     }
-  })()
+    if (y <= 0 || y >= MAP_HEIGHT) {
+      vy *= -1
+    }
+
+    x += vx
+    y += vy
+
+    ws.send(serializeMoveMessage(x, y))
+    await delay(1 / 60)
+  }
 }

@@ -5,6 +5,7 @@ import incomingWith from "./incomingWith";
 import sendToNewbie from "./sendToNewbie";
 import useContext from "../context/useContext";
 import useStat from "../stat/useStat";
+import url from "url";
 
 export default function handleConnectionWith({
   wss,
@@ -15,7 +16,8 @@ export default function handleConnectionWith({
     const context = useContext();
     const stat = useStat();
 
-    const id = request.headers["x-id"] as string;
+    const parsedUrl = url.parse(request.url ?? "", true);
+    const id = parsedUrl.query["x-id"] as string;
     ++stat.connected;
 
     sendToNewbie(ws);
