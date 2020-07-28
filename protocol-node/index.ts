@@ -48,7 +48,10 @@ export function parseIdMoveMessages(data: string): IdPos[] {
   while (true) {
     const nextIndex = data.indexOf("\n", lastIndex + 1);
     const endIndex = nextIndex < 0 ? data.length : nextIndex;
-    result.push(parseIdMoveMessage(data.substring(lastIndex, endIndex)));
+    const maybe = parseIdMoveMessage(data.substring(lastIndex, endIndex));
+    if (maybe !== null) {
+      result.push(maybe);
+    }
     if (nextIndex < 0) {
       return result;
     }
