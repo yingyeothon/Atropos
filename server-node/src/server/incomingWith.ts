@@ -10,8 +10,8 @@ export default function incomingWith({
 }: {
   wss: WebSocket.Server;
   id: string;
-}): (data: WebSocket.Data) => void {
-  return (data: WebSocket.Data) => {
+}): (data: WebSocket.Data) => Promise<void> {
+  return async (data: WebSocket.Data) => {
     const pos = parseMoveMessage(data.toString());
     if (pos === null) {
       return;
@@ -25,7 +25,7 @@ export default function incomingWith({
     ++stat.received;
 
     if (context.state === "receiving") {
-      broadcastDifferences(wss);
+      await broadcastDifferences(wss);
     }
   };
 }

@@ -4,7 +4,9 @@ import serializeMap from "../context/serializeMap";
 import useContext from "../context/useContext";
 import useStat from "../stat/useStat";
 
-export default function broadcastDifferences(wss: WebSocket.Server): void {
+export default async function broadcastDifferences(
+  wss: WebSocket.Server
+): Promise<void> {
   const context = useContext();
   const stat = useStat();
 
@@ -19,12 +21,24 @@ export default function broadcastDifferences(wss: WebSocket.Server): void {
   const ser = serializeMap(localMap);
 
   ++stat.broadcast;
-  wss.clients.forEach(function each(client) {
+
+  // Broadcast with promise.
+  const promises: Promise<void>[] = [];
+  wss.clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(ser);
+      promises.push(
+        new Promise<void>((resolve, reject) =>
+          client.send(ser, (error) => (error ? reject(error) : resolve()))
+        )
+      );
       ++stat.sent;
     }
   });
+  try {
+    await Promise.all(promises);
+  } catch (error) {
+    // Ignore sending error.
+  }
 
   context.state = "receiving";
 }

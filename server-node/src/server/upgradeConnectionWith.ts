@@ -24,7 +24,7 @@ export default function upgradeConnectionWith({
     const pathname = parsedUrl.pathname;
     const id = parsedUrl.query["x-id"] as string;
     if (id && !(id in context.connections) && pathname === "/xy") {
-      wss.handleUpgrade(request, socket, head, function done(ws) {
+      wss.handleUpgrade(request, socket, head, (ws) => {
         // Double check
         if (id in context.connections) {
           socket.destroy();
@@ -32,7 +32,6 @@ export default function upgradeConnectionWith({
         }
 
         context.connections[id] = ws;
-
         wss.emit("connection", ws, request);
       });
     } else {

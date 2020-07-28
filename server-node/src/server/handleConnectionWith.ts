@@ -3,16 +3,19 @@ import * as http from "http";
 import WebSocket from "ws";
 import incomingWith from "./incomingWith";
 import sendToNewbie from "./sendToNewbie";
+import url from "url";
 import useContext from "../context/useContext";
 import useStat from "../stat/useStat";
-import url from "url";
 
 export default function handleConnectionWith({
   wss,
 }: {
   wss: WebSocket.Server;
 }) {
-  return (ws: WebSocket, request: http.IncomingMessage): void => {
+  return async (
+    ws: WebSocket,
+    request: http.IncomingMessage
+  ): Promise<void> => {
     const context = useContext();
     const stat = useStat();
 
@@ -20,7 +23,7 @@ export default function handleConnectionWith({
     const id = parsedUrl.query["x-id"] as string;
     ++stat.connected;
 
-    sendToNewbie(ws);
+    await sendToNewbie(ws);
 
     ws.on("message", incomingWith({ id, wss }));
     ws.on("close", () => {
