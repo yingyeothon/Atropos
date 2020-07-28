@@ -26,8 +26,8 @@ const idle = async (ws: WebSocket) => {
   let x = getRandomInt(MAP_WIDTH)
   let y = getRandomInt(MAP_HEIGHT)
 
-  let vx = getRandomInt(5)
-  let vy = getRandomInt(5)
+  let vx = getRandomInt(2)
+  let vy = getRandomInt(2)
 
   while (true) {
     if (x <= 0 || x >= MAP_WIDTH) {
@@ -41,6 +41,6 @@ const idle = async (ws: WebSocket) => {
     y += vy
 
     ws.send(serializeMoveMessage(x, y))
-    await delay(1 / 60)
+    await delay(1 / 10)
   }
 }
