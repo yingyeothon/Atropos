@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start-web": "cross-env TS_NODE_PROJECT=\\\"configs/tsconfig-for-webpack-config.json\\\" webpack-dev-server --config configs/webpack.config.ts --mode development",
-    "start-bot": "ts-node-dev src/start-bot.ts"
+    "start-bot": "ts-node-dev src/bot/index.ts"
   },
   "devDependencies": {
     "@babel/core": "^7.10.5",

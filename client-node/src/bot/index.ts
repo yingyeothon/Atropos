@@ -1,9 +1,16 @@
+import delay from 'delay'
 import { createBot } from "./bot";
-import delay from "delay";
-import { range } from "./util";
+import { range } from '../common/util';
+import { monitorStat, stat } from './stat';
+
+const botCount = 500
+
 
 async function main() {
-  const bots = range(500).map((_) => createBot());
+  stat.botCount = botCount
+  monitorStat()
+
+  const bots = range(botCount).map((_) => createBot());
   while (true) {
     bots.forEach((bot) => bot.move());
     await Promise.all(bots.map((bot) => bot.send()));
