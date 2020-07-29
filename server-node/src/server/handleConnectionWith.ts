@@ -28,6 +28,8 @@ export default function handleConnectionWith({
     ws.on("message", incomingWith({ id, wss }));
     ws.on("close", () => {
       delete context.connections[id];
+      delete context.map[id];
+
       ++stat.disconnected;
     });
     ws.on("error", () => {
