@@ -7,11 +7,7 @@ import url from "url";
 import useContext from "../context/useContext";
 import useStat from "../stat/useStat";
 
-export default function handleConnectionWith({
-  wss,
-}: {
-  wss: WebSocket.Server;
-}) {
+export default function handleConnectionWith() {
   return async (
     ws: WebSocket,
     request: http.IncomingMessage
@@ -25,7 +21,7 @@ export default function handleConnectionWith({
 
     await sendToNewbie(ws);
 
-    ws.on("message", incomingWith({ id, wss }));
+    ws.on("message", incomingWith({ id }));
     ws.on("close", () => {
       delete context.connections[id];
       delete context.map[id];

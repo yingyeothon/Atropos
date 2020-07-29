@@ -9,6 +9,9 @@ const stat = {
   disconnected: 0,
   countBeforeCoalesce: 0,
   countAfterCoalesce: 0,
+  broadcastElapsed: 0,
+  broadcastDataLength: 0,
+  broadcastSleepMillis: 0,
 };
 
 export default stat;

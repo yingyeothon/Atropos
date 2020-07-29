@@ -10,7 +10,7 @@ export default async function broadcastDifferences(
   const context = useContext();
   const stat = useStat();
 
-  context.state = "broadcasting";
+  const start = Date.now();
 
   // Swap pending queue.
   const pending = context.pending;
@@ -22,6 +22,7 @@ export default async function broadcastDifferences(
   stat.countAfterCoalesce += Object.keys(localMap).length;
 
   const ser = serializeMap(localMap);
+  stat.broadcastDataLength += ser.length;
 
   ++stat.broadcast;
 
@@ -43,5 +44,5 @@ export default async function broadcastDifferences(
     // Ignore sending error.
   }
 
-  context.state = "receiving";
+  stat.broadcastElapsed += Date.now() - start;
 }
