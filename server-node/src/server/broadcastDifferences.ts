@@ -18,6 +18,9 @@ export default async function broadcastDifferences(
 
   // Send diff.
   const localMap = moveToMap(pending);
+  stat.countBeforeCoalesce += pending.length;
+  stat.countAfterCoalesce += Object.keys(localMap).length;
+
   const ser = serializeMap(localMap);
 
   ++stat.broadcast;

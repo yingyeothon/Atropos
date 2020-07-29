@@ -7,6 +7,8 @@ const stat = {
   connectionError: 0,
   socketError: 0,
   disconnected: 0,
+  countBeforeCoalesce: 0,
+  countAfterCoalesce: 0,
 };
 
 export default stat;
