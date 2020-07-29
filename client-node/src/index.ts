@@ -1,7 +1,9 @@
-import { MAP_HEIGHT, MAP_WIDTH } from './map';
 import { IdPos, parseIdMoveMessages } from '../../protocol-node';
+import { MAP_HEIGHT, MAP_WIDTH } from './map';
+
 import { connect } from './connection';
 import delay from 'delay'
+import shortid from 'shortid';
 
 const world: { [key: string]: IdPos } = {}
 
@@ -32,12 +34,13 @@ const render = async (canvas: HTMLCanvasElement) => {
 
   render(canvas)
 
-  const ws = connect() as globalThis.WebSocket
+  const ws = connect(shortid()) as globalThis.WebSocket
 
   ws.onmessage = function (ev) {
     const idPoses = parseIdMoveMessages(ev.data)
     idPoses.forEach(idPos => {
       world[idPos[0]] = idPos
     })
+    console.log(ev.data.length, idPoses.length);
   }
 })()

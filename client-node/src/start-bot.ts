@@ -1,6 +1,17 @@
 import { createBot } from "./bot";
-import { range } from './util';
+import delay from "delay";
+import { range } from "./util";
 
-range(50).forEach(_ => {
-  createBot()
-})
+async function main() {
+  const bots = range(500).map((_) => createBot());
+  while (true) {
+    bots.forEach((bot) => bot.move());
+    await Promise.all(bots.map((bot) => bot.send()));
+
+    await delay(1000 / 60);
+  }
+}
+
+if (require.main === module) {
+  main();
+}

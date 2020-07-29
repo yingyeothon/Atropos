@@ -1,12 +1,10 @@
 import { isBrowser, isNode } from "browser-or-node";
+
 import NodeWebSocket from 'ws'
-import shortid from 'shortid';
 
 const SERVER_URL = 'ws://localhost:8989/xy'
 
-export const connect = () => {
-  const id = shortid()
-
+export const connect = (id: string) => {
   const url = `${SERVER_URL}?x-id=${id}`
 
   if (isBrowser) {
