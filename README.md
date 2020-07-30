@@ -1,4 +1,4 @@
-# friendly-carnival
+# Atropos
 
 1000 vs 1000
 
