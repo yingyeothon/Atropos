@@ -1,30 +1,30 @@
 import * as http from "http";
 
+import Map from "../map/models/Map";
 import WebSocket from "ws";
 import incomingWith from "./incomingWith";
-import sendToNewbie from "./sendToNewbie";
 import url from "url";
-import useContext from "../context/useContext";
+import useCharacter from "../character/useCharacter";
+import useClientReplier from "./useClientReplier";
 import useStat from "../stat/useStat";
 
-export default function handleConnectionWith() {
+export default function handleConnectionWith({ map }: { map: Map }) {
   return async (
     ws: WebSocket,
     request: http.IncomingMessage
   ): Promise<void> => {
-    const context = useContext();
     const stat = useStat();
 
     const parsedUrl = url.parse(request.url ?? "", true);
     const id = parsedUrl.query["x-id"] as string;
     ++stat.connected;
 
-    await sendToNewbie(ws);
+    const { reply } = useClientReplier({ ws });
+    const character = useCharacter({ id, map, sendMessage: reply });
 
-    ws.on("message", incomingWith({ id }));
+    ws.on("message", incomingWith({ character }));
     ws.on("close", () => {
-      delete context.connections[id];
-      delete context.map[id];
+      character.request("despawn");
 
       ++stat.disconnected;
     });

@@ -1,12 +1,12 @@
+import Character from "../character/models/Character";
 import WebSocket from "ws";
 import { parseMoveMessage } from "../../../protocol-node";
-import useContext from "../context/useContext";
 import useStat from "../stat/useStat";
 
 export default function incomingWith({
-  id,
+  character,
 }: {
-  id: string;
+  character: Character;
 }): (data: WebSocket.Data) => void {
   return (data: WebSocket.Data) => {
     const pos = parseMoveMessage(data.toString());
@@ -14,11 +14,9 @@ export default function incomingWith({
       return;
     }
 
-    const context = useContext();
-    const stat = useStat();
+    character.request("move", { x: pos[0], y: pos[1] });
 
-    context.map[id] = pos;
-    context.pending.push({ id, pos });
+    const stat = useStat();
     ++stat.received;
   };
 }

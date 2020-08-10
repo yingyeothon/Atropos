@@ -16,14 +16,7 @@ export default async function startStatMonitor(): Promise<void> {
       "Diff",
       ...Object.entries(diff).map(([k, v]) => `${k}=${v}`),
       "\n",
-      `snt/rcv=` + (diff.sent / diff.received).toFixed(3),
-      `rcv/bct=` + (diff.received / diff.broadcast).toFixed(3),
-      `snt/bct=` + (diff.sent / diff.broadcast).toFixed(3),
-      `bfc/afc=` +
-        (diff.countBeforeCoalesce / diff.countAfterCoalesce).toFixed(3),
-      `bel/bct=` + (diff.broadcastElapsed / diff.broadcast).toFixed(3),
-      `bdl/bct=` + (diff.broadcastDataLength / diff.broadcast).toFixed(3),
-      `bsm/bct=` + (diff.broadcastSleepMillis / diff.broadcast).toFixed(3)
+      `snt/rcv=` + (diff.sent / diff.received).toFixed(3)
     );
 
     await sleep(5000);
